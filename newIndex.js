@@ -42,7 +42,7 @@ async function start() {
     app.use(express.static("public"));
     app.use("/api/v1", apiRoute);
     const server = require("http").createServer(app);
-    // initialize(server); // for socket
+    initialize(server); // for socket
     server.listen(PORT, () => {
       console.log(`Server is running on port ${PORT}`);
     });

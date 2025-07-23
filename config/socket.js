@@ -20,7 +20,7 @@ function initialize(server) {
     },
   });
 
-  // io.use(socketAuthMiddleware);
+  io.use(socketAuthMiddleware);
 
   io.on("connection", (socket) => {
     console.log("Client connected:", socket.id);

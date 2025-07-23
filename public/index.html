@@ -13,7 +13,11 @@
     <script src="/socket.io/socket.io.js"></script>
 
     <script>
-        const socket = io("http://localhost:3000");
+        const socket = io("http://localhost:3000", {
+            auth: {
+                token: 'your_jwt_token_here',
+            }
+        });
 
         function send() {
             const val = document.getElementById("msg").value;
