@@ -1,10 +1,10 @@
-const AuthService = require("../services/auth.services");
+const UserService = require("../services/user.services");
 
 // Login Controller
-const login = async (req, res) => {
+const UserAdd = async (req, res) => {
   try {
-    const userAgent = req.headers["user-agent"];
-    const result = await AuthService.login({ ...req.body,userAgent });
+    
+    const result = await UserService.userAdd({ ...req.body });
     return res.status(result.status).json(result);
   } catch (error) {
     console.error("Login Error:", error);
@@ -13,10 +13,9 @@ const login = async (req, res) => {
 };
 
 // Signup Controller
-const signup = async (req, res) => {
+const UserList = async (req, res) => {
   try {
-    const image = req.files?.filter((img) => img.fieldname.startsWith("image")) || [];
-    const result = await AuthService.signUp({ ...req.body, image });
+    const result = await UserService.userList({ ...req.query, ...req.params });
     return res.status(result.status).json(result);
   } catch (error) {
     console.error("Signup Error:", error);
@@ -28,7 +27,7 @@ const signup = async (req, res) => {
 const refreshAccessToken=async(req,res)=>{
   try {
     const token=req.headers['x-refresh-token']
-    const result=await AuthService.refreshAccessToken({
+    const result=await UserService.refreshAccessToken({
       ...req.body,token
     })
     return res.status(result.status).json(result)
@@ -38,4 +37,4 @@ const refreshAccessToken=async(req,res)=>{
   }
 }
 
-module.exports = { login, signup,refreshAccessToken };
+module.exports = { UserAdd, UserList,refreshAccessToken };

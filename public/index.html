@@ -17,6 +17,7 @@
 
         function send() {
             const val = document.getElementById("msg").value;
+            console.log("send function client")
             socket.emit("send_message", { text: val });
             document.getElementById("msg").value = '';
 

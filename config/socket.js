@@ -1,5 +1,13 @@
 const socketIo = require("socket.io");
 
+//auth
+const socketAuthMiddleware=require("../socket/middlewares/auth")
+
+//handlers
+const chatHandler = require("../socket/handler/chatHandler");
+const notificationHandler = require("../socket/handler/notificationHandler");
+
+
 const _ = require("lodash");
 let io;
 
@@ -11,30 +19,14 @@ function initialize(server) {
       credentials: true,
     },
   });
-  // io.use((socket, next) => {
-  //   const token = socket.handshake.auth?.token;
-  //   if (!token) return next(new Error("Access token required"));
-  //   try {
-  //     const decoded = jwt.verify(token, process.env.JWT_SECRET || "Chinmoy@crj93");
-  //     socket.user = decoded; // attach user to socket
-  //     next();
-  //   } catch (err) {
-  //     return next(new Error("Invalid or expired token"));
-  //   }
-  // });
+
+  // io.use(socketAuthMiddleware);
+
   io.on("connection", (socket) => {
     console.log("Client connected:", socket.id);
-    console.log("Client connected:", socket?.user);
-    socket.on("send_message", (data) => {
-      console.log("data", data);
-      const msg = {
-        from: socket.id,
-        text: data,
-        timestamp: Date.now(),
-      };
-      console.log("Received:", msg);
-      io.emit("receive_message", msg); // Broadcast to all clients
-    });
+    // Delegate events
+    chatHandler(io, socket);
+    notificationHandler(io, socket);
     socket.on("disconnect", () => {
       console.log("Client disconnected:", socket.id);
     });
@@ -42,6 +34,9 @@ function initialize(server) {
 }
 
 function getIo() {
+  if (!io) {
+    throw new Error("Socket.io not initialized! Call initialize(server) first.");
+  }
   return io;
 }
 

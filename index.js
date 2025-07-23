@@ -4,7 +4,7 @@ const connectDB = require("./db/mongoDB");
 const cors = require("cors");
 const apiRoute = require("./routes/api.v1.route");
 const { initialize } = require("./config/socket");
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT ;
 
 async function start() {
   try {

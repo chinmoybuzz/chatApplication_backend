@@ -1,19 +1,24 @@
 const mongoose = require("mongoose");
 const bcrypt = require("bcrypt");
-const fileSchema = mongoose.Schema({
-  url: { type: String, default: null },
-  filename: { type: String, default: null },
-  size: { type: String, default: null },
-  extension: { type: String, default: null },
-  ordering: { type: Number, default: 0 },
-  status: { type: Number, enum: [1, 2], default: 1 },
-});
+const mongoosePaginate = require("mongoose-aggregate-paginate-v2");
+
+const {fileSchema,refreshTokenSchema}=require("../modal/helperSchema")
+const {Status, emailVerified,ratingNumber} =require("../helper/typeconfig")
+const { ObjectId } = require("mongoose").Types;
+
+
 const userSchema = new mongoose.Schema(
   {
+    name:{
+      type: String,
+      required: true,
+      lowercase: true,
+      trim: true,
+    },
     email: {
       type: String,
       required: true,
-      // unique: true, // ensures no duplicate emails
+      unique: true, // ensures no duplicate emails
       lowercase: true,
       trim: true,
     },
@@ -29,20 +34,27 @@ const userSchema = new mongoose.Schema(
       enum: ["user", "admin"],
       default: "user",
     },
+    emailVerified: { type: Number, enum: emailVerified, default: emailVerified[1] }, 
+    rating:{type: Number, enum: ratingNumber, default: ratingNumber[0]},
+    loginType: {
+      type: String,
+      enum: ['local', 'google', 'facebook'],
+     default: 'local',
+    },
+    status: { type: Number, enum: Status, default: Status[1] },
+    createdBy: { type: ObjectId, ref: "Users", default: null },
     deletedAt: {
-      type: String,
+      type: Date,
       default: null,
     },
-    refreshToken: {
-      type: String,
-      default: null,
-    },
+    refreshToken: [refreshTokenSchema],
   },
   {
     timestamps: true, // adds createdAt and updatedAt
   }
 );
 
+// password hashing
 userSchema.pre("save", async function (next) {
   if (!this.isModified("password")) {
     return next();
@@ -56,8 +68,13 @@ userSchema.pre("save", async function (next) {
   }
 });
 
+
+// password checking
 userSchema.methods.comparePassword = async function (candidatePassword) {
   return await bcrypt.compare(candidatePassword, this.password);
 };
+
+userSchema.plugin(mongoosePaginate);
+
 const userModel = mongoose.model("Users", userSchema);
 module.exports = userModel;
