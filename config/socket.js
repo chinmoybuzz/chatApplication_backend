@@ -26,7 +26,7 @@ function initialize(server) {
     console.log("Client connected:", socket.id);
     // Delegate events
     chatHandler(io, socket);
-    notificationHandler(io, socket);
+    // notificationHandler(io, socket);
     socket.on("disconnect", () => {
       console.log("Client disconnected:", socket.id);
     });

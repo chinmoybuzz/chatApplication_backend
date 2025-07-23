@@ -5,7 +5,7 @@ module.exports = function chatHandler(io, socket) {
       text: data,
       timestamp: Date.now(),
     };
-
+      
     console.log("Received:",data,"data part", msg);
     io.emit("receive_message", msg);
   });
