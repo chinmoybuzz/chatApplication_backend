@@ -22,12 +22,12 @@
         function send() {
             const val = document.getElementById("msg").value;
             console.log("send function client")
-            socket.emit("send_message", { text: val });
+            socket.emit("chat:message", { text: val });
             document.getElementById("msg").value = '';
 
         }
 
-        socket.on("receive_message", (data) => {
+        socket.on("chat:message", (data) => {
             const li = document.createElement("li");
             li.textContent = data.text;
             document.getElementById("messages").appendChild(li);
