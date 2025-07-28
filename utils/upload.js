@@ -43,4 +43,17 @@ const deleteFile = (filePath) => {
   }
 };
 
-module.exports = { uploadBinaryFile, deleteFile };
+const reqToFile=(req,pathName)=>{
+  try{
+    if(!req.files|| !Array.isArray(req.files)){
+      throw new Error("No files found in request")
+    }
+  const Image = req.files.filter((img) => img.fieldname.startsWith(pathName));
+  return Image;
+  }catch(error){
+    console.log("request to file Error:",error)
+  return []
+  }
+}
+
+module.exports = { uploadBinaryFile, deleteFile ,reqToFile};

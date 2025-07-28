@@ -27,9 +27,9 @@ const signup = async (req, res) => {
 //refresh-token
 const refreshAccessToken=async(req,res)=>{
   try {
-    const token=req.headers['x-refresh-token']
+    const refreshToken=req.headers['x-refresh-token']
     const result=await AuthService.refreshAccessToken({
-      ...req.body,token
+      refreshToken
     })
     return res.status(result.status).json(result)
   } catch (error) {

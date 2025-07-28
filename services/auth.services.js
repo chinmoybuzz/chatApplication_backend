@@ -17,6 +17,7 @@ const login = async (params) => {
         message: "User not found"
       });
     }
+ 
 
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) {
@@ -27,7 +28,7 @@ const login = async (params) => {
         message: "password mis matched"
       });
     }
-
+   console.log("login",user)
     const accessToken = jwt.sign(
       { userId: user._id, role: user.role },
       process.env.JWT_SECRET,
@@ -60,7 +61,7 @@ const login = async (params) => {
           email: user.email,
           role: user.role,
         },
-        token: accessToken,
+        accessToken: accessToken,
         refreshToken: refreshToken,
       }
     });
@@ -132,7 +133,7 @@ const signUp = async (params) => {
 
 const refreshAccessToken = async (params) => {
   try {
-    const { refreshToken } = params.headers; // or req.headers['x-refresh-token']
+    const { refreshToken } = params; // or req.headers['x-refresh-token']
 
     if (!refreshToken) {
       return createResponse({
@@ -203,9 +204,9 @@ const refreshAccessToken = async (params) => {
 
     return createResponse({
       status:200,
-      success:success,
+      success:"success",
       message:"Access token refreshed",
-      data:{token: newAccessToken},
+      data:{accessToken: newAccessToken},
     })
   } catch (error) {
     console.error("Refresh Token Error:", error);

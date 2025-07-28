@@ -11,7 +11,6 @@ const userSchema = new mongoose.Schema(
   {
     name:{
       type: String,
-      required: true,
       lowercase: true,
       trim: true,
     },
@@ -24,7 +23,6 @@ const userSchema = new mongoose.Schema(
     },
     password: {
       type: String,
-      required: true,
       minlength: 6, // optional validation
     },
     image: { type: fileSchema, default: null },
@@ -70,9 +68,9 @@ userSchema.pre("save", async function (next) {
 
 
 // password checking
-userSchema.methods.comparePassword = async function (candidatePassword) {
-  return await bcrypt.compare(candidatePassword, this.password);
-};
+// userSchema.methods.comparePassword = async function (candidatePassword) {
+//   return await bcrypt.compare(candidatePassword, this.password);
+// };
 
 userSchema.plugin(mongoosePaginate);
 

@@ -2,6 +2,7 @@ const UserModel = require("../modal/User.model"); // Make sure this model exists
 const { createResponse } = require("../utils/response");
 const {convertFieldsToAggregateObject,aggregateFileConcat}=require("../helper/index")
 const {statusSearch}=require("../helper/search");
+const { deleteFile, uploadBinaryFile } = require("../utils/upload");
 
 exports.userList= async (params) => {
     try {
@@ -117,14 +118,24 @@ exports.userList= async (params) => {
 };
 
 exports.userAdd = async (params) => {
-  console.log("Data from body:", params);
   try {
+    console.log("params data",params)
+    const {email}=params;
+    const checkData=await UserModel.findOne({email,deleteAt:null})
+     if (params.image.length > 0) {
+      if (checkData && checkData?.image?.url) deleteFile(checkData?.image?.url);
+      const up = await uploadBinaryFile({ file: params.image[0], folder: "users" });
+      params.image = up;
+    } else delete params.image;
+
     const user =await new UserModel({
       ...params,
-      ...dummy,
        createdBy: params.authUser ? params.authUser._id : null,
     });
 
+
+    // console.log()
+    // console.log(user)
     const savedUser = await user.save();
 
     return createResponse({

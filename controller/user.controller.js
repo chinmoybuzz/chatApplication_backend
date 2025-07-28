@@ -1,10 +1,13 @@
 const UserService = require("../services/user.services");
+const {reqToFile}=require("../utils/upload")
+
 
 // Login Controller
 const UserAdd = async (req, res) => {
   try {
-    
-    const result = await UserService.userAdd({ ...req.body });
+    const image= reqToFile(req,"image");
+    console.log("auth user",req.authUser)
+    const result = await UserService.userAdd({ ...req.authUser,...req.body,image });
     return res.status(result.status).json(result);
   } catch (error) {
     console.error("Login Error:", error);
