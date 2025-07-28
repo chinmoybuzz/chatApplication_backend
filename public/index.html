@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!-- <!DOCTYPE html>
 <html>
 
 <head>
@@ -32,6 +32,48 @@
             li.textContent = data.text;
             document.getElementById("messages").appendChild(li);
         });
+    </script>
+</body>
+
+</html>
+ -->
+
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <title>Socket Ticker</title>
+    <script src="https://cdn.socket.io/4.7.5/socket.io.min.js"></script>
+    <style>
+        body {
+            font-family: Arial;
+            padding: 20px;
+        }
+
+        #output {
+            border: 1px solid #ccc;
+            padding: 10px;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+
+<body>
+    <h2>Ticking Data Every 1 Second</h2>
+    <div id="output">Waiting for data...</div>
+
+    <script>
+        const socket = io('http://localhost:3000');
+        const output = document.getElementById('output');
+
+        socket.on('tick', (data) => {
+            output.textContent = JSON.stringify(data, null, 2);
+        });
+
+        socket.emit('chat:message', 'Hello server!');
+        socket.on('chat:message', (msg) => console.log('Chat:', msg));
     </script>
 </body>
 
