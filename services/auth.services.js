@@ -20,6 +20,7 @@ const login = async (params) => {
  
 
     const isMatch = await bcrypt.compare(password, user.password);
+    
     if (!isMatch) {
       return createResponse({
         status: 401,
@@ -40,6 +41,7 @@ const login = async (params) => {
       process.env.JWT_SECRET,
       { expiresIn: "7d" }
     );
+
     if (user.refreshToken.length >= 5) {
      user.refreshToken.shift(); // remove the oldest
     } 
